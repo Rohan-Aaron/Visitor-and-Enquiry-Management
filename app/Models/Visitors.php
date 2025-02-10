@@ -1,0 +1,19 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Visitors extends Model
+{
+    use HasFactory;
+    
+    protected $table='visitors';
+
+    protected $fillable = ['visitor_id', 'name', 'email', 'phone'];
+
+    public function visits(){
+        return $this->hasMany(Visits::class);
+    }
+}
