@@ -54,7 +54,7 @@ class EnquiryController extends Controller
         'agreement' => 'required|in:1',
     ]);
     if ($validatedData->fails()) {
-        toastr()->error($validatedData->errors()->first());
+        Alert::success('Registered Successfully');  
         return redirect()
             ->back()
             ->withErrors($validatedData->errors())

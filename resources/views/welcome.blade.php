@@ -1,4 +1,4 @@
-@include('sweetalert::alert')
+
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
@@ -6,7 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <title>Enquiry Form</title>
-
+        
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
@@ -189,7 +189,7 @@
         </div>
     </div>
 </div>
-
+@include('sweetalert::alert')
         <script src="{{asset('libs/jquery/dist/jquery.min.js')}}"></script>
         <script src="{{asset('libs/bootstrap/dist/js/bootstrap.bundle.min.js')}}"></script>
         <!-- solar icons -->    
@@ -315,6 +315,7 @@ function showModal(message, type) {
     responseModal.show();
 }
         </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.15.10/sweetalert2.all.min.js" integrity="sha512-KWZQo2EiUMmEMrjJUUZoWP8k/mL57L5PPjQF23Vv77jGidQK8WPsX/RoQ7uI0cnjDDCU8ZXa1NG24HkLOqI9sg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> 
       </body>
       
       </html>     
