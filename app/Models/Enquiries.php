@@ -20,9 +20,23 @@ class Enquiries extends Model
         'is_nri',
         'program',
         'course',
+        'program_id',
+        'course_id',
     ]; // Mass assignable fields
 
     protected $casts = [
         'is_nri' => 'boolean', // Cast is_nri to boolean
     ];
+    public function program()
+    {
+        return $this->belongsTo(Program::class, 'program_id');
+    }
+
+    /**
+     * Get the course associated with the enquiry.
+     */
+    public function course()
+    {
+        return $this->belongsTo(Course::class, 'course_id');
+    }
 }

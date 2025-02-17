@@ -75,7 +75,7 @@ Enquiry
             <div class="form-group row">
                 <label class="form-label text-end col-md-3">Program:</label>
                 <div class="col-md-9">
-                    <p>{{ $enquiry->program }}</p> <!-- Display the program -->
+                    <p>{{ $enquiry->program->title }}</p> <!-- Display the program -->
                 </div>
             </div>
         </div>
@@ -84,7 +84,7 @@ Enquiry
             <div class="form-group row">
                 <label class="form-label text-end col-md-3">Course:</label>
                 <div class="col-md-9">
-                    <p>{{ $enquiry->course }}</p> <!-- Display the course -->
+                    <p>{{ $enquiry->course->title }}</p> <!-- Display the course -->
                 </div>
             </div>
         </div>

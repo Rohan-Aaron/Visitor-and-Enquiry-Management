@@ -214,6 +214,7 @@ p {
         @php
             $visitor = session('visitor');
             $visit = session('visit');
+            $categoryName = session('categoryName');
         @endphp
 
         <header>
@@ -228,7 +229,6 @@ p {
               <p>We are glad to have you visit our campus.</p>
             </section>
             <section class="enquiry_submission">
-         
               <div class="pass-id">
                 <div class="card">
                   <div class="card-header">
@@ -243,8 +243,7 @@ p {
                         </tr>
                         <tr>
                           <th>Reason</th>
-                          <td>{{ $visit->category == 'other'? $visit->other_category: $visit->category }}</td>
-                        </tr>
+                          <td>{{ $categoryName == 'other' ? $visit->other_category : $categoryName }}</td>                        </tr>
                         <tr>
                           <th>Description</th>
                           <td>{{ $visit->description }}</td>
@@ -259,7 +258,7 @@ p {
                         </tr>
                       </tbody>
                     </table>
-                    <h3>SAU{{ \Carbon\Carbon::parse($visit->arrived_at)->format('y - m') }} : {{$visitor->visitor_id}}</h3>
+                    <h3>SAU{{ \Carbon\Carbon::parse($visit->arrived_at)->format('y - m') }} : {{$visitor->id}}</h3>
                   </div>
                   <footer class="card-footer">
                     <img src="{{asset('images/logo-with-name.png')}}" style="width: 200px ;">
