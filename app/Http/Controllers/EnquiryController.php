@@ -8,6 +8,9 @@ use RealRashid\SweetAlert\Facades\Alert;
 
 class EnquiryController extends Controller
 {
+ public function home(){
+    return view('welcome');
+ }
 
     public function index(Request $request)
 {
