@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -20,8 +19,14 @@ return new class extends Migration
             $table->string('country'); // Country name
             $table->string('state')->nullable(); // State (nullable if not in India)
             $table->boolean('is_nri'); // Boolean (1 = Yes, 0 = No)
-            $table->string('program'); // Program name
-            $table->string('course'); // Course name
+            // Define foreign keys
+            $table->unsignedBigInteger('program_id');
+            $table->unsignedBigInteger('course_id');
+
+            // Set foreign key constraints
+            $table->foreign('program_id')->references('id')->on('programs')->onDelete('cascade');
+            $table->foreign('course_id')->references('id')->on('courses')->onDelete('cascade');
+
             $table->timestamps(); // Created at & Updated at timestamps
         });
     }

@@ -55,27 +55,29 @@ class FormController extends Controller
 
 
         // Create a new visit record
-        $visit = new Visits([
+        $visit = Visits::create([
             'visitor_id' => $visitor->id,
             'category' => $request->reasonForVisit,
             'other_category' => $request->other,
             'description' => $request->description,
             'arrived_at' => now(),
-            'exited_at' => null
+            'exited_at' => null,
         ]);
+        // Fetch category name from VisitorCategory table using the provided category ID
+        $categoryname = VisitorCategory::find($request->reasonForVisit)->category ?? 'NULL';
 
-        $visit->save();
 
         session([
             'visitor' => $visitor,
             'visit' => $visit,
+            'categoryname' => $categoryname,
         ]);
 
 
 
 
         if (config('app.env') === 'production') {
-            $htmlContent = view('visitors.form_result', compact('visitor', 'visit'))->render();
+            $htmlContent = view('visitors.form_result', compact('visitor', 'visit', 'categoryname'))->render();
             Mail::to($request->email)->send(new VisitorEmail($htmlContent));
         }
 
@@ -92,15 +94,18 @@ class FormController extends Controller
             // If no session data, redirect to the form
             return redirect()->route('form.show');
         }
+    
+     
 
         // Fetch the data from session
         $visitor = session('visitor');
         $visit = session('visit');
+        $categoryname = session('categoryname');
 
         // Clear session data after displaying result
         session()->forget(['visitor', 'visit']);
 
         // Pass data to the result page view
-        return view('form_result', compact('visitor', 'visit'));  // Pass 'otherCategory' to view
+        return view('visitors.form_result', compact('visitor', 'visit'));  // Pass 'otherCategory' to view
     }
 }

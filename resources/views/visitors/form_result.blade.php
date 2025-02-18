@@ -210,14 +210,15 @@
 @endsection
 
 @section('content')
-    <div class="wrapper">
-        <div class="container">
-            <div class="inner_container">
-                @if (session()->has('visitor') && session()->has('visit'))
-                    @php
-                        $visitor = session('visitor');
-                        $visit = session('visit');
-                    @endphp
+<div class="wrapper">
+    <div class="container">
+      <div class="inner_container">
+        @if(session()->has('visitor') && session()->has('visit'))
+        @php
+            $visitor = session('visitor');
+            $visit = session('visit');
+            $categoryName = session('categoryName');
+        @endphp
 
                     <header>
                         <img src="{{ asset('images/college logo.png') }}" width="250px" />

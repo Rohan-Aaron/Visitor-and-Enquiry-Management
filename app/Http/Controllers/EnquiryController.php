@@ -1,19 +1,15 @@
 <?php
 
 namespace App\Http\Controllers;
-
-use App\Models\Course;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use App\Models\Enquiries;
-use App\Models\Program;
 use RealRashid\SweetAlert\Facades\Alert;
+use App\Models\Program;
+use App\Models\Course;
 
 class EnquiryController extends Controller
 {
-
-
-
     public function home()
     {
 
@@ -30,14 +26,15 @@ class EnquiryController extends Controller
         $countries = config('places.countries');
         return response()->json(['countries' => $countries]);
     }
-    public function fetchStates() {
+    public function fetchStates()
+    {
         $states = config('places.states');
         return response()->json(['states' => $states]);
     }
     public function fetchCourses()
     {
         $program_id = request()->get('program_id');
-        $validator = Validator::make(['program_id'  => $program_id], [
+        $validator = Validator::make(['program_id' => $program_id], [
             'program_id' => 'required|numeric|exists:programs,id'
         ]);
         if ($validator->fails()) {
@@ -72,30 +69,29 @@ class EnquiryController extends Controller
     }
 
 
-    public function  show($id)
+    public function show($id)
     {
         $enquiry = Enquiries::findOrFail($id);
         return view('enquiry.show', compact('enquiry'));
     }
 
     public function submitform(Request $request)
-    {
-
+    {  
         // Validate the incoming data
         $validatedData = Validator::make($request->all(), [
             'name' => 'required|max:255',
             'email' => 'required|email',
-            'gender'    => 'required|string|in:male,female,other',
-            'phone'     => 'required|numeric|digits_between:7,15',
+            'gender' => 'required|string|in:male,female,other',
+            'phone' => 'required|numeric|digits_between:7,15',
             'country' => 'required||string',
             'state' => 'nullable|string',
-            'isnri'     => 'required',
-            'program' => 'required',
-            'course' => 'required',
+            'isnri' => 'required|boolean',
+            'program' => 'required|exists:programs,id',
+            'course' => 'required|exists:courses,id',
             'agreement' => 'required|in:1',
         ]);
         if ($validatedData->fails()) {
-            toastr()->error($validatedData->errors()->first());
+            Alert::error('Registration failed');
             return redirect()
                 ->back()
                 ->withErrors($validatedData->errors())
@@ -109,9 +105,10 @@ class EnquiryController extends Controller
             'country' => $request->country,
             'state' => $request->state,
             'is_nri' => $request->isnri,
-            'program' => $request->program,
-            'course' => $request->course,
+            'program_id' => $request->program,
+            'course_id' => $request->course, 
         ]);
         return redirect()->back()->with('success', 'Your data has been saved successfully!');
+
     }
 }

@@ -4,15 +4,14 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
     public function up(): void
     {
         //Visitors table
-        Schema::create('visitors',function(Blueprint $table){
+        Schema::create('visitors', function (Blueprint $table) {
             $table->id('visitor_id');
             $table->string('name');
             $table->string('email');
@@ -22,11 +21,11 @@ return new class extends Migration
         });
 
         //Visits table
-        Schema::create('visits',function(Blueprint $table){
+        Schema::create('visits', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('visitor_id');
-            $table->string('category',40);
-            $table->string('other_category',50)->nullable();
+            $table->unsignedBigInteger('category');
+            $table->string('other_category', 50)->nullable();
 
             $table->text('description')->nullable();
             $table->timestamp('arrived_at')->nullable();
@@ -35,11 +34,13 @@ return new class extends Migration
 
             // Foreign key constraint to visitors table
             $table->foreign('visitor_Id')->references('visitor_Id')->on('visitors')
-                  ->onDelete('cascade'); 
+                ->onDelete('cascade');
+            $table->foreign('category')->references('id')->on('visitorcategory')
+                ->onDelete('cascade');
         });
 
-        
-    }   
+
+    }
 
     /**
      * Reverse the migrations.

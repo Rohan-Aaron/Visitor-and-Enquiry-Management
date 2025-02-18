@@ -1,4 +1,3 @@
-@include('sweetalert::alert')
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
@@ -208,7 +207,7 @@
             </div>
         </div>
     </div>
-
+    @include('sweetalert::alert')
     <script src="{{ asset('libs/jquery/dist/jquery.min.js') }}"></script>
     <script src="{{ asset('libs/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
     <!-- solar icons -->
@@ -217,6 +216,19 @@
     <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@17.0.8/build/js/intlTelInput.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/countries-states-cities-database/1.2.0/js/countries.js"></script>
+    @if (session('success'))
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                Swal.fire({
+                    title: "Good job!",
+                    text: "{{ session('success') }}",
+                    icon: "success",
+                    confirmButtonText: "OK",
+                    confirmButtonColor: "#3085d6"
+                });
+            });
+        </script>
+    @endif
 
 
 
@@ -240,43 +252,41 @@
         document.addEventListener("DOMContentLoaded", function() {
             const countrySelect = document.getElementById("country");
             const stateSelect = document.getElementById("state");
-
-            // Function to fetch data
-            async function fetchData(url, options = {}) {
-                try {
-                    const response = await fetch(url, options);
-                    const data = await response.json();
-                    return data;
-                } catch (error) {
-                    console.error("Error fetching data:", error);
-                }
-            }
-
-            // Fetch Countries
             async function loadCountries() {
-
-
-                fetch(`/fetch-countries`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.error) {
-                            console.error('Error fetching countries:', data.error);
-                            return;
-                        }
-
-                        const select = document.getElementById('country');
-                        select.innerHTML = '<option selected disabled>--Select Country--</option>';
-
-                        data.countries.forEach(country => {
-                            const option = document.createElement('option');
-                            option.value = country;
-                            option.text = country;
-                            select.appendChild(option);
-                        });
-                    })
-                    .catch(error => console.error('Failed to fetch countries:', error));
-
+    fetch(`/fetch-countries`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                console.error('Error fetching countries:', data.error);
+                return;
             }
+
+            const select = document.getElementById('country');
+            select.innerHTML = '<option selected disabled>--Select Country--</option>';
+
+            data.countries.forEach(country => {
+                const option = document.createElement('option');
+                option.value = country;
+                option.text = country;
+                select.appendChild(option);
+            });
+
+            // Listen for changes to the selected country
+            select.addEventListener('change', function() {
+                const stateDiv = document.getElementById('state-container'); // assuming the state input is inside a div with this ID
+                
+                // If India is selected, remove the state input
+                if (this.value === 'India') {
+                    stateDiv.style.display = 'none';  // Hide the state input container
+                } else {
+                    stateDiv.style.display = 'block';  // Show the state input container if not India
+                    // You can populate the states here if needed
+                }
+            });
+        })
+        .catch(error => console.error('Failed to fetch countries:', error));
+}
+
 
             // Fetch States When State is India
             async function loadStates() {
@@ -300,7 +310,6 @@
                     })
                     .catch(error => console.error('Failed to fetch states:', error));
             }
-
             // Event Listeners
             countrySelect.addEventListener("change", loadStates);
 
@@ -331,29 +340,32 @@
             responseModal.show();
         }
 
-        function fetchCourses(e) {
-            let programId = e.target.value;
-            fetch(`/fetch-courses?program_id=${programId}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.error) {
-                        console.error('Error fetching courses:', data.error);
-                        return;
-                    }
+            function fetchCourses(e) {
+                let programId = e.target.value;
+                fetch(`/fetch-courses?program_id=${programId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.error) {
+                            console.error('Error fetching courses:', data.error);
+                            return;
+                        }
 
-                    const select = document.getElementById('course-selection');
-                    select.innerHTML = '<option selected disabled>--Select Course--</option>';
+                        const select = document.getElementById('course-selection');
+                        select.innerHTML = '<option selected disabled>--Select Course--</option>';
 
-                    data.courses.forEach(course => {
-                        const option = document.createElement('option');
-                        option.value = course.id;
-                        option.text = course.title;
-                        select.appendChild(option);
-                    });
-                })
-                .catch(error => console.error('Failed to fetch courses:', error));
-        }
+                        data.courses.forEach(course => {
+                            const option = document.createElement('option');
+                            option.value = course.id;
+                            option.text = course.title;
+                            select.appendChild(option);
+                        });
+                    })
+                    .catch(error => console.error('Failed to fetch courses:', error));
+            }
     </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.15.10/sweetalert2.all.min.js"
+        integrity="sha512-KWZQo2EiUMmEMrjJUUZoWP8k/mL57L5PPjQF23Vv77jGidQK8WPsX/RoQ7uI0cnjDDCU8ZXa1NG24HkLOqI9sg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </body>
 
 </html>
