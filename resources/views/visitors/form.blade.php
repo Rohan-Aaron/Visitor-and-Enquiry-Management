@@ -50,7 +50,16 @@
                       <label for="phoneNumber" class="form-label">Phone Number</label>
                       <input type="tel" class="form-control" id="phoneNumber" oninput="this.value = this.value.replace(/\D/g, '')" name="phoneNumber" required>
                   </div>
-                  
+                  <div class="mb-3">
+                    <label for="gender" class="form-label">Gender</label>
+                    <select class="form-control" id="gender" name="gender" required>
+                        <option value="">Select Gender</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                
                
                   <div class="mb-3">
                       <label for="reasonForVisit" class="form-label">Reason for Visit</label>
@@ -58,9 +67,17 @@
                         @foreach ($categories as $category)
                             <option value="{{$category->Category}}">{{$category->Category}}</option>
                         @endforeach
-                          <option value="meetingProfessor">Meeting a Professor</option>
-                          <option value="campusTour">Campus Tour</option>
-                          <option value="event">Event</option>
+                        <option value="admission_inquiry">Admission Inquiry</option>
+                        <option value="guest_lecture">Guest Lecture</option>
+                        <option value="event_participation">Participation in Cultural Fest, Seminar, or Workshop</option>
+                        <option value="vendor_visit">Vendor Visit</option>
+                        <option value="parent_guardian_visit">Parent/Guardian Visit</option>
+                        <option value="alumni_visit">Alumni Engagement</option>
+                        <option value="official_inspection">Official Inspection or Audit</option>
+                        <option value="maintenance_work">Maintenance or Infrastructure Work</option>
+                        <option value="spiritual_purpose">Spiritual/Religious Purpose</option>
+                        <option value="academic_collaboration">Academic Collaboration</option>
+                        
                           <option value="other">Other</option>
                       </select>
                   </div>
@@ -71,8 +88,8 @@
                   </div>
                   <div class="mb-3" id="descriptionField" >
                       <label for="description" class="form-label">Description</label>
-                      <input type="text" name="description" class="form-control" id="description" >
-                  </div>
+                      <textarea name="description" class="form-control" id="description" rows="2"></textarea>
+                    </div>
                
                  
                   <button type="submit" class="btn btn-primary "  style="border-radius: 24px;">Submit</button>

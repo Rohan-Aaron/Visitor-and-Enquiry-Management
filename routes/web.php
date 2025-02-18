@@ -21,7 +21,7 @@ use App\Http\Controllers\EnquiryController;
 Route::get('/', [EnquiryController::class, 'home']);
 
 Route::get('/form', [FormController::class, 'showForm'])->name('form.show');
-Route::post('/submit', [FormController::class, 'submitForm'])->name('form.submit');
+Route::post('/form/submit', [FormController::class, 'submitForm'])->name('form.submit');
 Route::get('/visitors/result', function () {
     return view('visitors.form_result');
 })->name('visitors.result');

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Mail\VisitorEmail;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
@@ -14,15 +15,15 @@ class FormController extends Controller
     // Show the form page
     public function showForm()
     {
-        $categories=VisitorCategory::all();
-        return view('visitors.form',compact('categories'));  // Return the form view
+        $categories = VisitorCategory::all();
+        return view('visitors.form', compact('categories'));  // Return the form view
     }
 
     // Handle the form submission
     public function submitForm(Request $request)
     {
         // Validate the incoming data
-        $validatedData = Validator::make($request->all(),[
+        $validatedData = Validator::make($request->all(), [
             'name' => 'required|max:255',
             'email' => 'required|email',
             'phoneNumber' => 'required|max:15',
@@ -37,36 +38,46 @@ class FormController extends Controller
                 ->withInput();
         }
         // Check if the visitor already exists
-        $visitor = Visitors::where('email', $request->email)->first();
+        // Attempt to find the visitor by email or phone
+        $visitor = Visitors::where('email', $request->email)
+            ->orWhere('phone', $request->phoneNumber)
+            ->first();
 
+        // If no visitor is found, create a new one
         if (!$visitor) {
-            // If visitor doesn't exist, create a new visitor and a visit record
-            $visitor=Visitors::create([
-                'name'=>$request->name,
-                'email'=>$request->email,
-                'phone'=>$request->phoneNumber,
+            $visitor = Visitors::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'gender' => $request->gender,
+                'phone' => $request->phoneNumber,
             ]);
         }
-        $visitor = Visitors::where('email', $request->email)->first();
+
 
         // Create a new visit record
-        $visit = new Visits();
-        $visit->visitor_id = $visitor->visitor_id;
-        $visit->category = $request->reasonForVisit;
-        $visit->other_category = $request->other;  // If 'other' is filled
-        $visit->description = $request->description;
-        $visit->arrived_at = now();  // Store the current timestamp for arrival
-        $visit->exited_at = null;  // Set to null initially
+        $visit = new Visits([
+            'visitor_id' => $visitor->id,
+            'category' => $request->reasonForVisit,
+            'other_category' => $request->other,
+            'description' => $request->description,
+            'arrived_at' => now(),
+            'exited_at' => null
+        ]);
+
         $visit->save();
 
         session([
-            'visitor'=>$visitor,
-            'visit'=>$visit,
+            'visitor' => $visitor,
+            'visit' => $visit,
         ]);
 
-        $htmlContent = view('visitors.form_result', compact('visitor', 'visit'))->render();
 
-        Mail::to($request->email)->send(new VisitorEmail($htmlContent));
+
+
+        if (config('app.env') === 'production') {
+            $htmlContent = view('visitors.form_result', compact('visitor', 'visit'))->render();
+            Mail::to($request->email)->send(new VisitorEmail($htmlContent));
+        }
 
 
         // Redirect to result page
@@ -75,21 +86,21 @@ class FormController extends Controller
 
     // Show the result page (after form submission)
     public function showResult()
-{
-    // Check if form data is stored in the session
-    if (!session()->has('visitor')) {
-        // If no session data, redirect to the form
-        return redirect()->route('form.show');
+    {
+        // Check if form data is stored in the session
+        if (!session()->has('visitor')) {
+            // If no session data, redirect to the form
+            return redirect()->route('form.show');
+        }
+
+        // Fetch the data from session
+        $visitor = session('visitor');
+        $visit = session('visit');
+
+        // Clear session data after displaying result
+        session()->forget(['visitor', 'visit']);
+
+        // Pass data to the result page view
+        return view('form_result', compact('visitor', 'visit'));  // Pass 'otherCategory' to view
     }
-
-    // Fetch the data from session
-    $visitor = session('visitor');
-    $visit = session('visit');
-
-    // Clear session data after displaying result
-    session()->forget(['visitor', 'visit']);
-
-    // Pass data to the result page view
-    return view('form_result', compact('visitor', 'visit'));  // Pass 'otherCategory' to view
-}
 }

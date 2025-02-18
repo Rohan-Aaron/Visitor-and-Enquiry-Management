@@ -14,8 +14,9 @@ return new class extends Migration
         //Visitors table
         Schema::create('visitors',function(Blueprint $table){
             $table->id('visitor_id');
-            $table->string('name',50);
-            $table->string('email',150);
+            $table->string('name');
+            $table->string('email');
+            $table->string('gender');
             $table->string('phone',15);
             $table->timestamps();
         });
