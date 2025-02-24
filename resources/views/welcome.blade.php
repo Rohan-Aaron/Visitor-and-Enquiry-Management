@@ -277,9 +277,9 @@
                 
                 // If India is selected, remove the state input
                 if (this.value === 'India') {
-                    stateDiv.style.display = 'none';  // Hide the state input container
+                    stateDiv.style.display = 'block';  // Hide the state input container
                 } else {
-                    stateDiv.style.display = 'block';  // Show the state input container if not India
+                    stateDiv.style.display = 'none';  // Show the state input container if not India
                     // You can populate the states here if needed
                 }
             });
